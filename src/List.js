@@ -9,6 +9,16 @@ class List extends Component {
     places: [],
     query: ''
   }
+  getFilteredPlaces() {
+    const { query, places } = this.state;
+
+    if (!query) {
+      return places;
+    }
+
+    const match = new RegExp(escapeRegExp(query), 'i');
+    return places.filter(p => match.test(p.name));
+  }
   componentDidMount() {
     Geocode.fromAddress("Seattle").then(
       geoResponse => {
@@ -24,45 +34,8 @@ class List extends Component {
       }
     );
   }
-
-  getFilteredPlaces() {
-    const { query, places } = this.state;
-
-    if (!query) {
-      return places;
-    }
-
-    const match = new RegExp(escapeRegExp(query), 'i');
-    return places.filter(p => match.test(p.name));
-  }
-  handleSandwichClick = () => {
-    const map = document.querySelector('.mapContainer');
-    map.style.marginLeft = map.style.marginLeft === '250px' ? '0' : '250px';
-
-    const sandwich = document.querySelector('.sandwich');
-    sandwich.style.left = sandwich.style.left === '250px' ? '0' : '250px';
-  }
-  handleQueryUpdate = (query) => {
-    this.setState({ query }, () => {
-      const filtered = this.getFilteredPlaces();
-      this.props.setMarkers(filtered);
-    });
-  }
-
-  getInputField = () => {
-    const { query } = this.state;
-
-    return <input
-      tabIndex={1}
-      className='filterPlaces'
-      type='text'
-      value={query}
-      onChange={event => this.handleQueryUpdate(event.target.value)}
-      placeholder='Filter places' />
-  }
   getPlaceList = () => {
     let filteredPlaces = this.getFilteredPlaces();
-
     return (
       <ol className='places' role='listbox' aria-label='List of places'>
         {filteredPlaces.map((p, index) =>
@@ -83,13 +56,37 @@ class List extends Component {
       </ol>
     )
   }
+  getInputField = () => {
+    const { query } = this.state;
+
+    return <input
+      tabIndex={1}
+      className='filterPlaces'
+      type='text'
+      value={query}
+      onChange={event => this.handleQueryUpdate(event.target.value)}
+      placeholder='Filter places' />
+  }
+  handleSandwichClick = () => {
+    const map = document.querySelector('.mapContainer');
+    map.style.marginLeft = map.style.marginLeft === '250px' ? '0' : '250px';
+
+    const sandwich = document.querySelector('.sandwich');
+    sandwich.style.left = sandwich.style.left === '250px' ? '0' : '250px';
+  }
+  handleQueryUpdate = (query) => {
+    this.setState({ query }, () => {
+      const filtered = this.getFilteredPlaces();
+      this.props.setMarkers(filtered);
+    });
+  }
   render() {
     return (
       <div>
         <div className='sidebar'>
           <div className='heading' role='heading'>
             <h1 className='title'>
-              Places
+              Seattle Sites
             </h1>
             {this.getInputField()}
           </div>
