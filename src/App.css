@@ -34,10 +34,10 @@ body,
   background: #3e3e3e;
 }
 .mapContainer,
-.sandwich {
+.hamburger {
   transition: 0.3s ease all;
 }
-.sandwich {
+.hamburger {
   margin: 0;
   position: absolute;
   background: #fff;
@@ -46,7 +46,7 @@ body,
   padding: 25px;
   cursor: pointer;
 }
-.sandwich img {
+.hamburger img {
   width: 32px;
 }
 .place {
@@ -117,7 +117,7 @@ body,
   transition: 0.3s ease all;
 }
 @media screen and (max-width: 600px) {
-  .sandwich {
+  .hamburger {
     padding: 25px 20px;
   }
   .informationWindow,

@@ -11,11 +11,9 @@ class List extends Component {
   }
   getFilteredPlaces() {
     const { query, places } = this.state;
-
     if (!query) {
       return places;
     }
-
     const match = new RegExp(escapeRegExp(query), 'i');
     return places.filter(p => match.test(p.name));
   }
@@ -58,7 +56,6 @@ class List extends Component {
   }
   getInputField = () => {
     const { query } = this.state;
-
     return <input
       tabIndex={1}
       className='filterPlaces'
@@ -67,12 +64,12 @@ class List extends Component {
       onChange={event => this.handleQueryUpdate(event.target.value)}
       placeholder='Filter places' />
   }
-  handleSandwichClick = () => {
+  handleHamburgerClick = () => {
     const map = document.querySelector('.mapContainer');
     map.style.marginLeft = map.style.marginLeft === '250px' ? '0' : '250px';
 
-    const sandwich = document.querySelector('.sandwich');
-    sandwich.style.left = sandwich.style.left === '250px' ? '0' : '250px';
+    const hamburger = document.querySelector('.hamburger');
+    hamburger.style.left = hamburger.style.left === '250px' ? '0' : '250px';
   }
   handleQueryUpdate = (query) => {
     this.setState({ query }, () => {
@@ -97,8 +94,8 @@ class List extends Component {
         <div
           tabIndex='-1'
           style={{left: '250px'}}
-          className='sandwich'
-          onClick={this.handleSandwichClick}>
+          className='hamburger'
+          onClick={this.handleHamburgerClick}>
           <img
             src='menu.png'
             alt='Toggle menu' />
@@ -107,5 +104,4 @@ class List extends Component {
     );
   }
 }
-
 export default List;
