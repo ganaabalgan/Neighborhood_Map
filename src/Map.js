@@ -1,17 +1,9 @@
 import React, { Component } from 'react';
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps";
-
-/**
- * Set value to true on map load callback
- */
 function onMapLoaded() {
   console.log('map callback');
   window.isMapLoaded = true;
 }
-
-/**
- * Map component itself
- */
 const MapComponent = withScriptjs(withGoogleMap(props => {
     return <GoogleMap
       defaultZoom={12}
@@ -30,31 +22,21 @@ const MapComponent = withScriptjs(withGoogleMap(props => {
     </GoogleMap>
   }
 ))
-
-/**
- * Map container with map component inside
- */
 class Map extends Component {
   componentDidMount() {
-    // Set initial value
     window.isMapLoaded = false;
-
-    // Set map callback function
     window.onMapLoaded = onMapLoaded;
-
-    // Set timeout for 10 seconds
     setTimeout(() => {
       if (!window.isMapLoaded) {
         this.props.onError();
       }
     }, 10000);
   }
-
   render() {
     return <div
       role='region'
       aria-label='map'
-      className='map-container'
+      className='mapContainer'
       style={{marginLeft: '250px'}}>
       <MapComponent
         isMarkerShown={this.props.places.length > 0}
@@ -69,5 +51,4 @@ class Map extends Component {
     </div>;
   }
 }
-
 export default Map;

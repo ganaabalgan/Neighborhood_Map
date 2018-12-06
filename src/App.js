@@ -5,8 +5,8 @@ import InfoWindow from './InfoWindow';
 import './App.css';
 
 const FOURSQUARE = require('react-foursquare')({
-  clientID: 'M12QVVNX2SKBLVVFFSCIM5QTAARZQO2DWVOFS5I2TJROQCQS',
-  clientSecret: 'AUPOT5CTTD1YYR11L1MG4GJHS0ZFKBJRNIFX3LXBZ1LM3M03'
+  clientID: 'LHV1G2LIUUEZZIG55P0BJPCYUJWVCOGDKMIW0GJASYVI3PLP',
+  clientSecret: 'RJ5YCUR3BTDRY2Y2STTDNKFVGQWUKHPMYQWVOSE14FUN24EJ'
 });
 
 class App extends Component {
@@ -14,24 +14,30 @@ class App extends Component {
     places: [],
     selectedPlace: null
   }
-
-  /**
-   * HANDLERS
-   */
-
-  /**
-   * Set markers all over the map according to
-   * passed places array
-   */
   handleSetMarkers = (places) => {
     this.setState({ places });
   }
-
-  /**
-   * Handles the click on markers
-   */
+  handleHidingInfoWindow = () => {
+    const places = this.state.places.map((p, index) => {
+      p.clicked = false;
+      return p;
+    });
+    this.setState({ places: places, selectedPlace: null });
+  }
+  // Returns foursquare response
+  getInfo = (place) => {
+    return FOURSQUARE.venues.getVenue({
+      'venue_id': place.id
+    })
+  }
+  showError = () => {
+    const block = document.querySelector('.error');
+    block.style.opacity = 1;
+    setTimeout(() => {
+      block.style.opacity = 0;
+    }, 3000);
+  }
   handleMarkerClick = (marker) => {
-    // 1. Update places and mark the clicked one
     const places = this.state.places.map((p, index) => {
       if (index === marker) {
         p.clicked = true;
@@ -40,63 +46,18 @@ class App extends Component {
       }
       return p;
     });
-
-    // 2. Get info details from external provider
     this.getInfo(this.state.places[marker])
       .then(fsResponse => {
-        // Set state of the component
         this.setState({
           places: places,
           selectedPlace: fsResponse.response.venue
         });
-
-        // Lock focus on newly opened modal window
-        document.querySelector('.info-window').focus();
+        document.querySelector('.informationWindow').focus();
       })
       .catch(error => {
         this.showError();
         console.log(error);
       });
-  }
-
-  /**
-   * Hides the modal info window and
-   * mark all places not clicked
-   */
-  handleHidingInfoWindow = () => {
-    // Update places
-    const places = this.state.places.map((p, index) => {
-      p.clicked = false;
-      return p;
-    });
-
-    // Update component state
-    this.setState({ places: places, selectedPlace: null });
-  }
-
-  /**
-   * FUNCTIONS
-   */
-
-  /**
-   * Returns promise with FOURSQUARE response
-   */
-  getInfo = (place) => {
-    return FOURSQUARE.venues.getVenue({
-      'venue_id': place.id
-    })
-  }
-
-  /**
-   * Shows the error modal window for 3 seconds
-   * and then hide it
-   */
-  showError = () => {
-    const block = document.querySelector('.error');
-    block.style.opacity = 1;
-    setTimeout(() => {
-      block.style.opacity = 0;
-    }, 3000);
   }
 
   render() {
@@ -105,24 +66,29 @@ class App extends Component {
     });
 
     return (
-      <div className='app-container'>
+      <div className='appContainer'>
         <List
           foursquare={FOURSQUARE}
           setMarkers={this.handleSetMarkers}
-          onPlaceClick={this.handleMarkerClick} />
+          onPlaceClick={this.handleMarkerClick}
+        />
         <Map
           places={placesInfo}
           hideInfoWindow={this.handleHidingInfoWindow}
           onMarkerClick={this.handleMarkerClick}
           onError={this.showError}
-           />
-        {this.state.selectedPlace && (<InfoWindow
-          place={this.state.selectedPlace}
-          foursquare={FOURSQUARE}
-          hideInfoWindow={this.handleHidingInfoWindow} />)}
+        />
+        {this.state.selectedPlace && (
+          <InfoWindow
+            place={this.state.selectedPlace}
+            foursquare={FOURSQUARE}
+            hideInfoWindow={this.handleHidingInfoWindow}
+          />
+        )}
         <div
           style={{ opacity: 0 }}
-          className='error'>Something went wrong</div>
+          className='error'>Something went wrong
+        </div>
       </div>
     );
   }

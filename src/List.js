@@ -36,7 +36,7 @@ class List extends Component {
     return places.filter(p => match.test(p.name));
   }
   handleSandwichClick = () => {
-    const map = document.querySelector('.map-container');
+    const map = document.querySelector('.mapContainer');
     map.style.marginLeft = map.style.marginLeft === '250px' ? '0' : '250px';
 
     const sandwich = document.querySelector('.sandwich');
@@ -54,7 +54,7 @@ class List extends Component {
 
     return <input
       tabIndex={1}
-      className='filter-places'
+      className='filterPlaces'
       type='text'
       value={query}
       onChange={event => this.handleQueryUpdate(event.target.value)}
@@ -93,7 +93,7 @@ class List extends Component {
             </h1>
             {this.getInputField()}
           </div>
-          <div className='place-list' role='region'>
+          <div className='placeList' role='region'>
             {this.getPlaceList()}
           </div>
         </div>
